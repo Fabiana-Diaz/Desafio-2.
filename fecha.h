@@ -22,4 +22,14 @@ public:
     void setDia(int d);
     void setMes(int m);
     void setAnio(int a);
+
+     // Métodos funcionales
+    bool esAnteriorA(const Fecha& otra) const;
+    bool esIgualA(const Fecha& otra) const;
+
+    Fecha sumarDias(int cantidad) const; // devuelve nueva fecha
+
+    void mostrarExtendido() const; // imprime: "lunes, 15 de mayo del 2025"
+
+
 #endif // FECHA_H
