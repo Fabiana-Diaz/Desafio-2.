@@ -31,5 +31,15 @@ public:
 
     void mostrarExtendido() const; // imprime: "lunes, 15 de mayo del 2025"
 
+ // Utilidades
+    int calcularDiaSemana() const; // 0=domingo, 1=lunes,...
+    bool esFechaValida() const;
+
+    // Operadores sobrecargados
+    bool operator<(const Fecha& otra) const;
+    bool operator==(const Fecha& otra) const;
+};
+
+
 
 #endif // FECHA_H
