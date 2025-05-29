@@ -58,7 +58,7 @@ int cargarAlojamientosDesdeArchivo(Alojamiento alojamientos[], int maxAlojamient
         try {
             puntuacion = stof(temp[6]); // Campo 6 = puntuación
         } catch (invalid_argument& e) {
-            cout << "Error: puntuación inválida en la línea → " << linea << endl;
+            cout << "Error: puntuación invalida en la línea → " << linea << endl;
             puntuacion = 0.0f;
         }
 
