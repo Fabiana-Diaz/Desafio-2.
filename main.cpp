@@ -1,40 +1,61 @@
 #include <iostream>
 #include "alojamiento.h"
-using namespace std;
+#include "anfitrion.h"
+#include "huesped.h"
+#include "reservacion.h"
+#include "menu.h"  //  Incluye el header del menú
 
-// Declaraciones de funciones externas (archivo_alojamiento.cpp)
+// Declaraciones de funciones para cargar y guardar datos
 int cargarAlojamientosDesdeArchivo(Alojamiento[], int);
 void guardarAlojamientosEnArchivo(Alojamiento[], int);
+int cargarAnfitrionesDesdeArchivo(Anfitrion[], int, Alojamiento[], int);
+void guardarAnfitrionesEnArchivo(const Anfitrion[], int);
+int cargarHuespedesDesdeArchivo(Huesped[], int);
+void guardarHuespedesEnArchivo(const Huesped[], int);
+int cargarReservacionesDesdeArchivo(Reservacion[], int);
+void guardarReservacionesEnArchivo(const Reservacion[], int);
 
 int main() {
     const int MAX = 100;
     Alojamiento alojamientos[MAX];
-    int cantidad = 0;
+    Anfitrion anfitriones[MAX];
+    Huesped huespedes[MAX];
+    Reservacion reservas[MAX];
+    int cantidadAlojamientos = 0;
+    int cantidadAnfitriones = 0;
+    int cantidadHuespedes = 0;
+    int cantidadReservas = 0;
 
-    // 1. Cargar alojamientos desde archivo
-    cantidad = cargarAlojamientosDesdeArchivo(alojamientos, MAX);
-    cout << "Se cargaron " << cantidad << " alojamientos desde el archivo." << endl;
+    // Cargar datos desde archivos
+    cantidadAlojamientos = cargarAlojamientosDesdeArchivo(alojamientos, MAX);
+    cantidadAnfitriones = cargarAnfitrionesDesdeArchivo(anfitriones, MAX, alojamientos, cantidadAlojamientos);
+    cantidadHuespedes = cargarHuespedesDesdeArchivo(huespedes, MAX);
+    cantidadReservas = cargarReservacionesDesdeArchivo(reservas, MAX);
 
-    // 2. Mostrar los alojamientos cargados
-    for (int i = 0; i < cantidad; ++i) {
-        cout << "\nAlojamiento #" << (i + 1) << ":" << endl;
-        alojamientos[i].mostrar();
-        cout << "--------------------------" << endl;
+    // Asignar reservaciones cargadas a huéspedes
+    for (int i = 0; i < cantidadReservas; ++i) {
+        string doc = reservas[i].getDocumentoHuesped();
+        for (int j = 0; j < cantidadHuespedes; ++j) {
+            if (huespedes[j].getDocumento() == doc) {
+                huespedes[j].agregarReserva(reservas[i]);
+                break;
+            }
+        }
     }
 
-    // 3. Agregar un nuevo alojamiento (de prueba)
-    cout << "\nAgregando un alojamiento nuevo..." << endl;
+    std::cout << "\nArchivos cargados correctamente.\n";
+    std::cout << cantidadAlojamientos << " alojamientos, "
+              << cantidadAnfitriones << " anfitriones, "
+              << cantidadHuespedes << " huespedes, "
+              << cantidadReservas << " reservas.\n";
 
-    string nuevasAmenidades[3] = {"piscina", "wifi", "parqueadero"};
-    Alojamiento nuevo("Cabania el Lago", "CBN123", "Km 7 via Guatape",
-                      "Antioquia", "Guatape", "casa", 4.7,
-                      nuevasAmenidades, 3, "Carlos Gómez");
-
-    alojamientos[cantidad++] = nuevo;
-
-    // 4. Guardar todos los alojamientos nuevamente
-    guardarAlojamientosEnArchivo(alojamientos, cantidad);
-    cout << "Todos los alojamientos fueron guardados exitosamente." << endl;
+    // Iniciar el menú principal del sistema
+    menu(alojamientos, cantidadAlojamientos,
+         anfitriones, cantidadAnfitriones,
+         huespedes, cantidadHuespedes,
+         reservas, cantidadReservas);
 
     return 0;
 }
+
+
