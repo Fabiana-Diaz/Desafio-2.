@@ -7,6 +7,7 @@
 #include "huesped.h"
 #include "reservacion.h"
 #include "fecha.h"
+#include "contador_iteraciones.h"
 #include "archivo_reservacion.h"
 
 using namespace std;
@@ -19,7 +20,8 @@ void reservarAlojamiento(Huesped* huespedes, int cantidadHuespedes,
 
 void anularReservacion(Reservacion* reservas, int& cantidadReservas, const string& docUsuario);
 void consultarReservasAnfitrion(const Anfitrion* anfitriones, int cantidadAnfitriones);
-void actualizarHistorico(Reservacion* reservas, int& cantidadReservas);
+void actualizarHistorico(Reservacion* reservas, int& cantidadReservas, const Fecha& corte, const string& nombreArchivo);
+
 
 void menu(Alojamiento* alojamientos, int& cantidadAlojamientos,
           Anfitrion* anfitriones, int& cantidadAnfitriones,
@@ -39,6 +41,7 @@ void menu(Alojamiento* alojamientos, int& cantidadAlojamientos,
         getline(cin, doc);
         Huesped* h = nullptr;
         for (int i = 0; i < cantidadHuespedes; ++i) {
+            ContadorIteraciones::incrementar();
             if (huespedes[i].getDocumento() == doc) {
                 h = &huespedes[i];
                 encontrado = true;
@@ -63,11 +66,14 @@ void menu(Alojamiento* alojamientos, int& cantidadAlojamientos,
                 break;
             }
         } while (opcion != 0);
+        ContadorIteraciones::incrementar();
+
     } else if (tipoUsuario == 2) {
         cout << "Ingrese su documento: ";
         getline(cin, doc);
         Anfitrion* a = nullptr;
         for (int i = 0; i < cantidadAnfitriones; ++i) {
+            ContadorIteraciones::incrementar();
             if (anfitriones[i].getDocumento() == doc) {
                 a = &anfitriones[i];
                 encontrado = true;
@@ -90,15 +96,22 @@ void menu(Alojamiento* alojamientos, int& cantidadAlojamientos,
             case 2:
                 consultarReservasAnfitrion(anfitriones, cantidadAnfitriones);
                 break;
-            case 3:
-                actualizarHistorico(reservas, cantidadReservas);
+            case 3: {
+                int dia, mes, anio;
+                cout << "Fecha de corte para el histórico (DD MM AAAA): ";
+                cin >> dia >> mes >> anio;
+                Fecha corte(dia, mes, anio);
+                actualizarHistorico(reservas, cantidadReservas, corte, "historico.txt");
                 break;
             }
+            }
         } while (opcion != 0);
+        ContadorIteraciones::incrementar();
     } else {
         cout << "Opción inválida.\n";
     }
 }
+
 
 void anularReservacion(Reservacion* reservas, int& cantidadReservas, const string& docUsuario) {
     string codigo;
@@ -106,6 +119,7 @@ void anularReservacion(Reservacion* reservas, int& cantidadReservas, const strin
     cin >> codigo;
 
     for (int i = 0; i < cantidadReservas; ++i) {
+        ContadorIteraciones::incrementar();
         if (reservas[i].getCodigoReserva() == codigo && reservas[i].getDocumentoHuesped() == docUsuario) {
             for (int j = i; j < cantidadReservas - 1; ++j) {
                 reservas[j] = reservas[j + 1];
@@ -126,6 +140,7 @@ void consultarReservasAnfitrion(const Anfitrion* anfitriones, int cantidadAnfitr
     const Anfitrion* anfitrionEncontrado = nullptr;
 
     for (int i = 0; i < cantidadAnfitriones; ++i) {
+        ContadorIteraciones::incrementar();
         if (anfitriones[i].getDocumento() == documento) {
             anfitrionEncontrado = &anfitriones[i];
             break;
@@ -156,6 +171,7 @@ void actualizarHistorico(Reservacion* reservas, int& cantidadReservas) {
     Fecha corte(dia, mes, anio);
 
     for (int i = 0; i < cantidadReservas; ) {
+        ContadorIteraciones::incrementar();
         if (reservas[i].getFechaSalida() < corte) {
             // Aquí se escribiría la reservación al archivo histórico (no implementado aún)
             for (int j = i; j < cantidadReservas - 1; ++j) {
@@ -179,6 +195,7 @@ void reservarAlojamiento(Huesped* huespedes, int cantidadHuespedes,
     // Buscar huesped
     Huesped* h = nullptr;
     for (int i = 0; i < cantidadHuespedes; ++i) {
+        ContadorIteraciones::incrementar();
         if (huespedes[i].getDocumento() == documento) {
             h = &huespedes[i];
             break;
@@ -233,6 +250,7 @@ void reservarAlojamiento(Huesped* huespedes, int cantidadHuespedes,
     cout << "\nAlojamientos disponibles:\n";
     int encontrados = 0;
     for (int i = 0; i < cantidadAlojamientos; ++i) {
+        ContadorIteraciones::incrementar();
         Alojamiento& a = alojamientos[i];
 
         if (a.getMunicipio() != municipio) continue;
@@ -246,6 +264,7 @@ void reservarAlojamiento(Huesped* huespedes, int cantidadHuespedes,
         bool disponible = true;
         Fecha salida = entrada.sumarDias(noches);
         for (int j = 0; j < a.getCantidadReservas(); ++j) {
+            ContadorIteraciones::incrementar();
             Reservacion r = a.getReserva(j);
             if (!(r.getFechaSalida() < entrada || r.getFechaEntrada() > salida)) {
                 disponible = false;
@@ -271,6 +290,7 @@ void reservarAlojamiento(Huesped* huespedes, int cantidadHuespedes,
 
     Alojamiento* seleccionado = nullptr;
     for (int i = 0; i < cantidadAlojamientos; ++i) {
+        ContadorIteraciones::incrementar();
         if (alojamientos[i].getCodigo() == codigoAlojamiento) {
             seleccionado = &alojamientos[i];
             break;
@@ -285,6 +305,7 @@ void reservarAlojamiento(Huesped* huespedes, int cantidadHuespedes,
     // Verificar conflictos de fechas
     Fecha salida = entrada.sumarDias(noches);
     for (int j = 0; j < seleccionado->getCantidadReservas(); ++j) {
+        ContadorIteraciones::incrementar();
         Reservacion r = seleccionado->getReserva(j);
         if (!(r.getFechaSalida() < entrada || r.getFechaEntrada() > salida)) {
             cout << "Ese alojamiento no esta disponible en ese rango.\n";

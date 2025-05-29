@@ -1,4 +1,5 @@
 #include "alojamiento.h"
+#include "contador_iteraciones.h"
 #include <iostream>
 #include <fstream>
 #include <stdexcept> // Para manejar errores de conversión
@@ -15,6 +16,7 @@ void guardarAlojamientosEnArchivo(Alojamiento alojamientos[], int cantidad) {
     }
 
     for (int i = 0; i < cantidad; ++i) {
+        ContadorIteraciones::incrementar();
         archivo << alojamientos[i].serializar() << endl;
     }
 
@@ -34,6 +36,7 @@ int cargarAlojamientosDesdeArchivo(Alojamiento alojamientos[], int maxAlojamient
     int count = 0;
 
     while (getline(archivo, linea) && count < maxAlojamientos) {
+        ContadorIteraciones::incrementar();
         if (linea.empty()) continue; // Ignorar líneas vacías
 
         string temp[9]; // Cada línea debe tener 9 campos
@@ -41,6 +44,7 @@ int cargarAlojamientosDesdeArchivo(Alojamiento alojamientos[], int maxAlojamient
         string valor = "";
 
         for (size_t i = 0; i <= linea.length(); ++i) {
+            ContadorIteraciones::incrementar();
             if (i == linea.length() || linea[i] == '|') {
                 temp[campo++] = valor;
                 valor = "";
@@ -68,6 +72,7 @@ int cargarAlojamientosDesdeArchivo(Alojamiento alojamientos[], int maxAlojamient
         string amenidad = "";
 
         for (size_t i = 0; i <= temp[7].length(); ++i) {
+            ContadorIteraciones::incrementar();
             if (i == temp[7].length() || temp[7][i] == ',') {
                 if (!amenidad.empty() && cantidadAmenidades < 6) {
                     amenidades[cantidadAmenidades++] = amenidad;

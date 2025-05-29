@@ -1,4 +1,5 @@
 #include "archivo_reservacion.h"
+#include "contador_iteraciones.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -29,6 +30,7 @@ int cargarReservacionesDesdeArchivo(Reservacion* lista, int max) {
     int contador = 0;
 
     while (getline(archivo, linea) && contador < max) {
+        ContadorIteraciones::incrementar();
         stringstream ss(linea);
         string codigo, codAloj, docHuesped, metodo, anotacion;
         int fechaEntradaInt, duracion, fechaPagoInt;
@@ -65,6 +67,7 @@ void guardarReservacionesEnArchivo(const Reservacion* lista, int cantidad) {
     }
 
     for (int i = 0; i < cantidad; ++i) {
+        ContadorIteraciones::incrementar();
         const Reservacion& r = lista[i];
         archivo << r.getCodigoReserva() << '|'
                 << r.getCodigoAlojamiento() << '|'

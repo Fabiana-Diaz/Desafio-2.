@@ -1,7 +1,9 @@
-// anfitrion.cpp
+#include "contador_iteraciones.h"
 #include "anfitrion.h"
 #include <iostream>
 #include "reservacion.h"
+#include "consumo_memoria.h"
+
 using namespace std;
 
 // Constructor por defecto
@@ -13,6 +15,7 @@ Anfitrion::Anfitrion() {
     capacidadMaxima = 10;
     cantidadActual = 0;
     alojamientos = new Alojamiento*[capacidadMaxima];
+     ConsumoMemoria::agregar(sizeof(Anfitrion) + sizeof(Alojamiento*) * capacidadMaxima);
 }
 
 // Constructor con parámetros
@@ -24,12 +27,14 @@ Anfitrion::Anfitrion(const string& nombre, const string& documento, int antigued
     this->capacidadMaxima = capacidad;
     this->cantidadActual = 0;
     this->alojamientos = new Alojamiento*[capacidadMaxima];
+    ConsumoMemoria::agregar(sizeof(Anfitrion) + sizeof(Alojamiento*) * capacidadMaxima);
 }
 
 // Destructor
 Anfitrion::~Anfitrion() {
     if (alojamientos != nullptr) {
         for (int i = 0; i < cantidadActual; ++i) {
+            ContadorIteraciones::incrementar();
             delete alojamientos[i];  // liberar cada Alojamiento creado con new
         }
         delete[] alojamientos;
@@ -91,6 +96,7 @@ void Anfitrion::mostrarAlojamientos() const {
     }
 
     for (int i = 0; i < cantidadActual; ++i) {
+        ContadorIteraciones::incrementar();
         cout << "\nAlojamiento #" << (i + 1) << ":" << endl;
         alojamientos[i]->mostrar();
         cout << "-----------------------------" << endl;
@@ -107,9 +113,11 @@ void Anfitrion::mostrarReservasEnRango(const Fecha& inicio, const Fecha& fin) co
     bool hayReservas = false;
 
     for (int i = 0; i < cantidadActual; ++i) {
+        ContadorIteraciones::incrementar();
         Alojamiento* aloj = alojamientos[i];
         if (aloj) {
             for (int j = 0; j < aloj->getCantidadReservas(); ++j) {
+                ContadorIteraciones::incrementar();
                 Reservacion r = aloj->getReserva(j);
                 Fecha entrada = r.getFechaEntrada();
                 if (entrada >= inicio && entrada <= fin) {

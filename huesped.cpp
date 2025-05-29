@@ -1,4 +1,7 @@
 #include "huesped.h"
+#include "contador_iteraciones.h"
+#include "consumo_memoria.h"
+
 #include <iostream>
 using namespace std;
 
@@ -8,6 +11,7 @@ Huesped::Huesped() {
     antiguedad = 0;
     puntuacion = 0.0f;
     cantidadReservas = 0;
+     ConsumoMemoria::agregar(sizeof(Huesped) + sizeof(Reservacion) * 20);
 }
 
 // Constructor con parámetros
@@ -18,6 +22,7 @@ Huesped::Huesped(const string& documento,
     this->antiguedad = antiguedad;
     this->puntuacion = puntuacion;
     this->cantidadReservas = 0;
+     ConsumoMemoria::agregar(sizeof(Huesped) + sizeof(Reservacion) * 20);
 }
 
 // Getters
@@ -55,6 +60,7 @@ bool Huesped::reservaSeCruza(const Reservacion& nuevaReserva) const {
     Fecha salidaNueva = nuevaReserva.getFechaSalida();
 
     for (int i = 0; i < cantidadReservas; ++i) {
+        ContadorIteraciones::incrementar();
         Fecha entradaExistente = reservaciones[i].getFechaEntrada();
         Fecha salidaExistente = reservaciones[i].getFechaSalida();
 
@@ -84,6 +90,7 @@ void Huesped::mostrarReservas() const {
     }
 
     for (int i = 0; i < cantidadReservas; ++i) {
+        ContadorIteraciones::incrementar();
         cout << "Reserva #" << (i + 1) << ":" << endl;
         reservaciones[i].mostrarResumen();
         cout << "----------------------" << endl;

@@ -1,6 +1,7 @@
 // archivo_anfitrion.cpp
 #include "anfitrion.h"
 #include "alojamiento.h"
+#include "contador_iteraciones.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -18,6 +19,7 @@ int cargarAnfitrionesDesdeArchivo(Anfitrion* anfitriones, int maxAnfitriones, Al
     int count = 0;
 
     while (getline(archivo, linea) && count < maxAnfitriones) {
+        ContadorIteraciones::incrementar();
         stringstream ss(linea);
         string nombre, documento, codigosStr;
         int antiguedad;
@@ -38,7 +40,9 @@ int cargarAnfitrionesDesdeArchivo(Anfitrion* anfitriones, int maxAnfitriones, Al
         stringstream codigosSS(codigosStr);
         string codigo;
         while (getline(codigosSS, codigo, ',')) {
+            ContadorIteraciones::incrementar();
             for (int i = 0; i < cantidadAlojamientos; ++i) {
+                ContadorIteraciones::incrementar();
                 if (alojamientos[i].getCodigo() == codigo) {
                     Alojamiento* ptr = new Alojamiento(alojamientos[i]);
                     a.agregarAlojamiento(ptr);
@@ -62,6 +66,7 @@ void guardarAnfitrionesEnArchivo(const Anfitrion anfitriones[], int cantidad) {
     }
 
     for (int i = 0; i < cantidad; ++i) {
+        ContadorIteraciones::incrementar();
         archivo << anfitriones[i].getDocumento() << "|"
                 << anfitriones[i].getAntiguedad() << "|"
                 << anfitriones[i].getPuntuacion() << "|"

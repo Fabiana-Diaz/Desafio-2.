@@ -5,5 +5,6 @@
 
 int cargarReservacionesDesdeArchivo(Reservacion* lista, int max);
 void guardarReservacionesEnArchivo(const Reservacion* lista, int cantidad);
+void guardarReservacionesEnArchivo(const Reservacion*, int);
 
 #endif

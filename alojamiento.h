@@ -2,6 +2,7 @@
 #define ALOJAMIENTO_H
 
 #include <string>
+#include "reservacion.h"
 using namespace std;
 
 class Alojamiento {
@@ -11,24 +12,23 @@ private:
     string direccion;
     string departamento;
     string municipio;
-    string tipo; // casa o apartamento
-    float puntuacion;
-    string amenidades[6];
+    string tipo;
+    float calificacion;
+    string anfitrion;
+    string* amenidades;
     int cantidadAmenidades;
-    string nombreAnfitrion;
+
+    Reservacion reservas[50];   // máximo 50 reservas por alojamiento
+    int cantidadReservas;
 
 public:
-    Alojamiento(); // Constructor por defecto
-
-    Alojamiento(const string& nombre,
-                const string& codigo,
-                const string& direccion,
-                const string& departamento,
-                const string& municipio,
-                const string& tipo,
-                float puntuacion,
-                string amenidades[], int cantidadAmenidades,
-                const string& nombreAnfitrion);
+    // Constructores y destructor
+    Alojamiento();
+    Alojamiento(const string& nombre, const string& codigo, const string& direccion,
+                const string& departamento, const string& municipio, const string& tipo,
+                float calificacion, string* amenidades, int cantidadAmenidades,
+                const string& anfitrion);
+    ~Alojamiento();
 
     // Getters
     string getNombre() const;
@@ -37,14 +37,22 @@ public:
     string getDepartamento() const;
     string getMunicipio() const;
     string getTipo() const;
-    float getPuntuacion() const;
+    float getCalificacion() const;
+    string getAnfitrion() const;
     int getCantidadAmenidades() const;
     string getAmenidad(int index) const;
-    string getNombreAnfitrion() const;
 
-    // Mostrar y serializar
-    void mostrar() const;
+    // Reservas
+    bool agregarReserva(const Reservacion& r);
+    int getCantidadReservas() const;
+    Reservacion getReserva(int indice) const;
+
+    // Serialización y visualización
     string serializar() const;
+    void mostrar() const;
+
+    // Carga desde texto plano
+    static Alojamiento parsearDesdeLinea(const string& linea);
 };
 
 #endif

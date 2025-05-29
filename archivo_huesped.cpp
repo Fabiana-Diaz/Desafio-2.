@@ -1,6 +1,7 @@
 #include <fstream>
 #include <sstream>
 #include "archivo_huesped.h"
+#include "contador_iteraciones.h"
 
 int cargarHuespedesDesdeArchivo(Huesped* huespedes, int max) {
     ifstream archivo("huespedes.txt");
@@ -10,6 +11,7 @@ int cargarHuespedesDesdeArchivo(Huesped* huespedes, int max) {
     int count = 0;
 
     while (getline(archivo, linea) && count < max) {
+        ContadorIteraciones::incrementar();
         stringstream ss(linea);
         string doc;
         int ant;
@@ -31,6 +33,7 @@ void guardarHuespedesEnArchivo(const Huesped* huespedes, int cantidad) {
     ofstream archivo("huespedes.txt");
 
     for (int i = 0; i < cantidad; ++i) {
+        ContadorIteraciones::incrementar();
         archivo << huespedes[i].getDocumento() << "|"
                 << huespedes[i].getAntiguedad() << "|"
                 << huespedes[i].getPuntuacion() << endl;
