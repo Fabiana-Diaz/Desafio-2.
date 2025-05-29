@@ -1,4 +1,7 @@
 #include "reservacion.h"
+#include "consumo_memoria.h"
+#include "contador_iteraciones.h"
+#include "consumo_memoria.h"
 #include <iostream>
 using namespace std;
 
@@ -13,6 +16,7 @@ Reservacion::Reservacion() {
     metodoPago = "";
     montoTotal = 0.0f;
     anotacion = "";
+     ConsumoMemoria::agregar(sizeof(Reservacion));
 }
 
 // Constructor con parámetros
@@ -34,6 +38,7 @@ Reservacion::Reservacion(const string& codigoReserva,
     this->metodoPago = metodoPago;
     this->montoTotal = montoTotal;
     this->anotacion = anotacion.substr(0, 1000); // máx 1000 caracteres
+     ConsumoMemoria::agregar(sizeof(Reservacion));
 }
 
 // Getters
@@ -103,4 +108,3 @@ void Reservacion::mostrarResumen() const {
     cout << "Monto Total: $" << montoTotal << endl;
     cout << "Anotacion del huésped: " << anotacion << endl;
 }
-

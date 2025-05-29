@@ -1,45 +1,42 @@
 #ifndef FECHA_H
 #define FECHA_H
 
+#include <string>
+using namespace std;
+
 class Fecha {
 private:
     int dia;
     int mes;
     int anio;
 
-    static const char* nombresDias[7];
-    static const char* nombresMeses[12];
 public:
     // Constructores
-    Fecha(); // Fecha por defecto
+    Fecha();
     Fecha(int d, int m, int a);
 
-    // Métodos de acceso
+    // Getters
     int getDia() const;
     int getMes() const;
     int getAnio() const;
 
-    void setDia(int d);
-    void setMes(int m);
-    void setAnio(int a);
+    // Comparaciones (para ordenamiento o verificación de fechas)
+    bool igual(const Fecha& otra) const;
+    bool menorQue(const Fecha& otra) const;
+    bool menorIgualQue(const Fecha& otra) const;
+    bool mayorQue(const Fecha& otra) const;
+    bool mayorIgualQue(const Fecha& otra) const;
 
-     // Métodos funcionales
-    bool esAnteriorA(const Fecha& otra) const;
-    bool esIgualA(const Fecha& otra) const;
+    // Métodos útiles
+    void mostrarExtendido() const;
+    int toEntero() const; // Representación YYYYMMDD
+    Fecha sumarDias(int n) const;
 
-    Fecha sumarDias(int cantidad) const; // devuelve nueva fecha
-
-    void mostrarExtendido() const; // imprime: "lunes, 15 de mayo del 2025"
-
- // Utilidades
-    int calcularDiaSemana() const; // 0=domingo, 1=lunes,...
-    bool esFechaValida() const;
-
-    // Operadores sobrecargados
-    bool operator<(const Fecha& otra) const;
-    bool operator==(const Fecha& otra) const;
+    // Sobrecarga para comparación (se define *fuera* de la clase)
+    friend bool operator<(const Fecha& a, const Fecha& b);
+    friend bool operator<=(const Fecha& a, const Fecha& b);
+    friend bool operator>(const Fecha& a, const Fecha& b);
+    friend bool operator>=(const Fecha& a, const Fecha& b);
 };
 
-
-
-#endif // FECHA_H
+#endif

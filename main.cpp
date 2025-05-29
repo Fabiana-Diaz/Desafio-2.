@@ -4,6 +4,9 @@
 #include "huesped.h"
 #include "reservacion.h"
 #include "menu.h"  //  Incluye el header del menú
+#include "contador_iteraciones.h"
+#include "consumo_memoria.h"
+
 
 // Declaraciones de funciones para cargar y guardar datos
 int cargarAlojamientosDesdeArchivo(Alojamiento[], int);
@@ -14,6 +17,7 @@ int cargarHuespedesDesdeArchivo(Huesped[], int);
 void guardarHuespedesEnArchivo(const Huesped[], int);
 int cargarReservacionesDesdeArchivo(Reservacion[], int);
 void guardarReservacionesEnArchivo(const Reservacion[], int);
+void actualizarHistorico(Reservacion* reservas, int& cantidadReservas, const Fecha& corte, const string& nombreArchivo);
 
 int main() {
     const int MAX = 100;
@@ -34,8 +38,10 @@ int main() {
 
     // Asignar reservaciones cargadas a huéspedes
     for (int i = 0; i < cantidadReservas; ++i) {
+        ContadorIteraciones::incrementar();
         string doc = reservas[i].getDocumentoHuesped();
         for (int j = 0; j < cantidadHuespedes; ++j) {
+            ContadorIteraciones::incrementar();
             if (huespedes[j].getDocumento() == doc) {
                 huespedes[j].agregarReserva(reservas[i]);
                 break;
@@ -55,7 +61,12 @@ int main() {
          huespedes, cantidadHuespedes,
          reservas, cantidadReservas);
 
+    cout << "\n--- Medicion de Consumo de Recursos ---\n";
+    cout << "Total de iteraciones realizadas: " << ContadorIteraciones::obtenerTotal() << endl;
+
+    std::cout << "Total de memoria consumida (en bytes): " << ConsumoMemoria::obtener() << " bytes\n";
+
+
     return 0;
+
 }
-
-
